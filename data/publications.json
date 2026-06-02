@@ -1,12 +1,12 @@
 [
- {huang2025predicting,
-  title={Predicting Alzheimer's disease subtypes and understanding their molecular characteristics in living patients with transcriptomic trajectory profiling},
-  author={Huang, Xiaoqing and Jannu, Asha Jacob and Song, Ziyan and Jury-Garfe, Nur and Lasagna-Reeves, Cristian A and Alzheimer's Disease Neuroimaging Initiative and Johnson, Travis S and Huang, Kun and Zhang, Jie},
-  journal={Alzheimer's \& Dementia},
-  volume={21},
-  number={1},
-  pages={e14241},
-  year={2025},
-  publisher={Wiley Online Library}
-}
+  {
+    "title": "Predicting Alzheimer's disease subtypes and understanding their molecular characteristics in living patients with transcriptomic trajectory profiling",
+    "authors": "Huang, Xiaoqing, Jannu, Asha Jacob, Song, Ziyan, Jury-Garfe, Nur, Lasagna-Reeves, Cristian A, Alzheimer's Disease Neuroimaging Initiative, Johnson, Travis S, Huang, Kun, and Zhang, Jie",
+    "venue": "Alzheimer's & Dementia",
+    "year": "2025",
+    "url": "",
+    "type": "article",
+    "featured": false,
+    "note": "Volume 21, issue 1, article e14241. Published by Wiley Online Library."
+  }
 ]
