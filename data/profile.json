@@ -3,12 +3,12 @@
   "short_name": "Hasan Imam",
   "title": "PhD Student in Computer Science",
   "affiliation": "Indiana University",
-  "email": "h.imamshihab@gmail.com",
+  "email": "mshihab@iu.edu",
   "location": "Bloomington, Indiana, USA",
-  "google_scholar_id": "YOUR_SCHOLAR_ID",
-  "github_username": "YOUR_GITHUB_USERNAME",
+  "google_scholar_id": "p6mx9gwAAAAJ&hl",
+  "github_username": "hasanimamshihab",
   "linkedin_username": "YOUR_LINKEDIN_USERNAME",
-  "orcid": "YOUR_ORCID_ID",
+  "orcid": "0009-0009-9061-4228",
   "cv_url": "#contact",
   "hero_summary": "I work at the intersection of machine learning, neuroimaging, bioinformatics, and health data science, with a focus on explainable AI for Alzheimer’s disease and brain–gene relationships.",
   "about": "I am a PhD student in Computer Science at Indiana University. I completed my M.S. in Computer Science at Indiana University. My research interests include deep learning, machine learning, bioinformatics, computational biology, neuroimaging, and imaging-genetics. I am especially interested in building explainable models that connect MRI/fMRI-derived brain features with genetic and molecular information in Alzheimer’s disease.",
@@ -24,6 +24,12 @@
       "institution": "Indiana University",
       "years": "Completed",
       "details": "Graduate training in computer science and data-driven research methods."
+    },
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "East West University",
+      "years": "Completed",
+      "details": "Focused on machine learning research."
     }
   ],
   "research_focus": [
