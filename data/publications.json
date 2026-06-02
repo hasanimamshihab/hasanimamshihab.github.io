@@ -1,12 +1,12 @@
 [
-  {
-    "title": "Replace this sample entry with your real Google Scholar publications",
-    "authors": "Md Hasan Imam Shihab",
-    "venue": "Publication venue",
-    "year": "2026",
-    "url": "https://scholar.google.com/",
-    "type": "sample",
-    "featured": true,
-    "note": "This file can be updated automatically from Google Scholar or manually from BibTeX."
-  }
+ @article{huang2025predicting,
+  title={Predicting Alzheimer's disease subtypes and understanding their molecular characteristics in living patients with transcriptomic trajectory profiling},
+  author={Huang, Xiaoqing and Jannu, Asha Jacob and Song, Ziyan and Jury-Garfe, Nur and Lasagna-Reeves, Cristian A and Alzheimer's Disease Neuroimaging Initiative and Johnson, Travis S and Huang, Kun and Zhang, Jie},
+  journal={Alzheimer's \& Dementia},
+  volume={21},
+  number={1},
+  pages={e14241},
+  year={2025},
+  publisher={Wiley Online Library}
+}
 ]
