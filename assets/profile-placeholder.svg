@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-label="HI profile placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#76e4f7"/>
+      <stop offset="0.55" stop-color="#a889ff"/>
+      <stop offset="1" stop-color="#7cf2b4"/>
+    </linearGradient>
+    <radialGradient id="r" cx="50%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.33"/>
+      <stop offset="1" stop-color="#07111f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="900" fill="#07111f"/>
+  <circle cx="220" cy="160" r="270" fill="#76e4f7" opacity="0.22"/>
+  <circle cx="760" cy="210" r="260" fill="#a889ff" opacity="0.24"/>
+  <circle cx="480" cy="760" r="330" fill="#7cf2b4" opacity="0.14"/>
+  <rect x="110" y="110" width="680" height="680" rx="120" fill="url(#g)" opacity="0.16" stroke="#ffffff" stroke-opacity="0.2"/>
+  <rect width="900" height="900" fill="url(#r)"/>
+  <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle" font-family="Inter, Arial, sans-serif" font-size="250" font-weight="900" fill="#eef5ff" letter-spacing="-18">HI</text>
+  <text x="50%" y="70%" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="700" fill="#b7c6d9">Replace with your photo</text>
+</svg>

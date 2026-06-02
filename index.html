@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Academic website for Md Hasan Imam Shihab: PhD student, machine learning, neuroimaging, bioinformatics, and Alzheimer’s disease research." />
+  <title>Md Hasan Imam Shihab | Academic Website</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="Home">
+      <span class="brand-mark">HI</span>
+      <span class="brand-text" data-profile="short_name">Hasan Imam</span>
+    </a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#about">About</a>
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="menu-button" aria-label="Open navigation" aria-expanded="false">☰</button>
+  </header>
+
+  <main>
+    <section class="hero section-pad">
+      <div class="hero-copy">
+        <p class="eyebrow">Academic Portfolio · Research Website</p>
+        <h1><span data-profile="name">Md Hasan Imam Shihab</span></h1>
+        <p class="subtitle"><span data-profile="title">PhD Student in Computer Science</span> · <span data-profile="affiliation">Indiana University</span></p>
+        <p class="hero-summary" data-profile="hero_summary">I work at the intersection of machine learning, neuroimaging, bioinformatics, and health data science.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#publications">View publications</a>
+          <a class="button secondary" href="#contact">Contact me</a>
+        </div>
+        <div class="signal-row" aria-label="Research signals">
+          <span>Explainable AI</span>
+          <span>Neuroimaging</span>
+          <span>Bioinformatics</span>
+          <span>Alzheimer’s disease</span>
+        </div>
+      </div>
+      <aside class="profile-card" aria-label="Profile summary">
+        <div class="avatar-wrap">
+          <img src="assets/profile-placeholder.svg" alt="Profile placeholder with initials HI" class="avatar" />
+        </div>
+        <div class="profile-card-body">
+          <h2 data-profile="short_name">Hasan Imam</h2>
+          <p data-profile="location">Bloomington, Indiana, USA</p>
+          <div class="profile-links">
+            <a data-link="scholar" href="https://scholar.google.com/" target="_blank" rel="noopener">Google Scholar</a>
+            <a data-link="github" href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank" rel="noopener">GitHub</a>
+            <a data-link="linkedin" href="https://www.linkedin.com/in/YOUR_LINKEDIN_USERNAME" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section-pad metrics" aria-label="Highlights">
+      <div class="metric-card"><strong>PhD</strong><span>Computer Science</span></div>
+      <div class="metric-card"><strong>MS</strong><span>Computer Science, IU</span></div>
+      <div class="metric-card"><strong>Focus</strong><span>AI for biomedical data</span></div>
+      <div class="metric-card"><strong>Data</strong><span>MRI · fMRI · DTI · Genomics</span></div>
+    </section>
+
+    <section class="section-pad split" id="about">
+      <div class="section-heading">
+        <p class="eyebrow">About</p>
+        <h2>Research-driven PhD portfolio</h2>
+      </div>
+      <div class="section-content">
+        <p class="large" data-profile="about">I am a PhD student in Computer Science at Indiana University.</p>
+        <div class="timeline" id="education-list"></div>
+      </div>
+    </section>
+
+    <section class="section-pad" id="research">
+      <div class="section-heading centered">
+        <p class="eyebrow">Research focus</p>
+        <h2>Building interpretable machine learning for brain and biomedical data</h2>
+        <p>These topics are loaded from <code>data/profile.json</code>, so the website can be updated without editing the HTML.</p>
+      </div>
+      <div class="focus-grid" id="research-focus"></div>
+    </section>
+
+    <section class="section-pad publication-section" id="publications">
+      <div class="section-heading">
+        <p class="eyebrow">Publications</p>
+        <h2>Selected publications</h2>
+        <p>Publications are loaded from <code>data/publications.json</code>. You can update this file manually, from BibTeX, or through the GitHub Action included in this package.</p>
+      </div>
+      <div class="pub-toolbar">
+        <input id="publication-search" type="search" placeholder="Search title, author, venue, or year" aria-label="Search publications" />
+        <a class="button secondary compact" data-link="scholar" href="https://scholar.google.com/" target="_blank" rel="noopener">Open Google Scholar</a>
+      </div>
+      <div class="publication-list" id="publication-list"></div>
+      <p class="tiny-note">For reliability, this site displays publications from a local JSON file. The included workflow can refresh that JSON from Google Scholar when your Scholar profile ID is added.</p>
+    </section>
+
+    <section class="section-pad" id="projects">
+      <div class="section-heading centered">
+        <p class="eyebrow">Projects</p>
+        <h2>Current research directions</h2>
+      </div>
+      <div class="project-grid" id="project-list"></div>
+    </section>
+
+    <section class="section-pad split skills-section">
+      <div class="section-heading">
+        <p class="eyebrow">Skills</p>
+        <h2>Technical toolkit</h2>
+      </div>
+      <div class="chip-cloud" id="skill-list"></div>
+    </section>
+
+    <section class="section-pad contact-section" id="contact">
+      <div class="contact-card">
+        <p class="eyebrow">Contact</p>
+        <h2>Let’s connect</h2>
+        <p>For research collaboration, academic opportunities, or project discussions, please contact me by email.</p>
+        <div class="contact-actions">
+          <a class="button primary" data-link="email" href="mailto:h.imamshihab@gmail.com">Email me</a>
+          <a class="button secondary" data-link="scholar" href="https://scholar.google.com/" target="_blank" rel="noopener">Google Scholar</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> <span data-profile="name">Md Hasan Imam Shihab</span></span>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

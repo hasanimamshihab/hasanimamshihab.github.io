@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Replace this sample entry with your real Google Scholar publications",
+    "authors": "Md Hasan Imam Shihab",
+    "venue": "Publication venue",
+    "year": "2026",
+    "url": "https://scholar.google.com/",
+    "type": "sample",
+    "featured": true,
+    "note": "This file can be updated automatically from Google Scholar or manually from BibTeX."
+  }
+]

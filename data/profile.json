@@ -1,0 +1,93 @@
+{
+  "name": "Md Hasan Imam Shihab",
+  "short_name": "Hasan Imam",
+  "title": "PhD Student in Computer Science",
+  "affiliation": "Indiana University",
+  "email": "h.imamshihab@gmail.com",
+  "location": "Bloomington, Indiana, USA",
+  "google_scholar_id": "YOUR_SCHOLAR_ID",
+  "github_username": "YOUR_GITHUB_USERNAME",
+  "linkedin_username": "YOUR_LINKEDIN_USERNAME",
+  "orcid": "YOUR_ORCID_ID",
+  "cv_url": "#contact",
+  "hero_summary": "I work at the intersection of machine learning, neuroimaging, bioinformatics, and health data science, with a focus on explainable AI for Alzheimer’s disease and brain–gene relationships.",
+  "about": "I am a PhD student in Computer Science at Indiana University. I completed my M.S. in Computer Science at Indiana University. My research interests include deep learning, machine learning, bioinformatics, computational biology, neuroimaging, and imaging-genetics. I am especially interested in building explainable models that connect MRI/fMRI-derived brain features with genetic and molecular information in Alzheimer’s disease.",
+  "education": [
+    {
+      "degree": "PhD in Computer Science",
+      "institution": "Indiana University",
+      "years": "Current",
+      "details": "Research in machine learning, neuroimaging, bioinformatics, and explainable AI."
+    },
+    {
+      "degree": "M.S. in Computer Science",
+      "institution": "Indiana University",
+      "years": "Completed",
+      "details": "Graduate training in computer science and data-driven research methods."
+    }
+  ],
+  "research_focus": [
+    "Explainable AI for Alzheimer’s disease",
+    "Neuroimaging and imaging-genetics",
+    "Machine learning for biomedical data",
+    "Bioinformatics and computational biology",
+    "fMRI, MRI, DTI, and multimodal brain data analysis"
+  ],
+  "projects": [
+    {
+      "title": "Subtype-aware imaging-genetics in Alzheimer’s disease",
+      "summary": "Integrating resting-state fMRI connectivity, GWAS-prioritized variants, and subtype labels to study resilience-like mechanisms in Alzheimer’s disease.",
+      "tags": [
+        "ADNI",
+        "fMRI",
+        "GWAS",
+        "Imaging-genetics",
+        "Alzheimer’s disease"
+      ]
+    },
+    {
+      "title": "Explainable MRI-to-gene representation learning",
+      "summary": "Developing interpretable models that connect MRI-derived brain patterns with gene-level representations and gene–region impact analyses.",
+      "tags": [
+        "MRI",
+        "Explainable AI",
+        "Deep learning",
+        "Gene-region analysis"
+      ]
+    },
+    {
+      "title": "Spatial transcriptomics and graph-based modeling",
+      "summary": "Applying graph and kernel-based methods to analyze spatial molecular organization and biologically meaningful patterns.",
+      "tags": [
+        "Graph learning",
+        "Spatial transcriptomics",
+        "Computational biology"
+      ]
+    }
+  ],
+  "skills": [
+    "Python",
+    "PyTorch",
+    "TensorFlow",
+    "scikit-learn",
+    "Nilearn",
+    "Scanpy",
+    "FSL",
+    "fMRIPrep",
+    "QSIPrep",
+    "PLINK",
+    "R",
+    "SQL",
+    "Git/GitHub"
+  ],
+  "service_teaching": [
+    {
+      "role": "Graduate Teaching Assistant",
+      "details": "Teaching support for computer science and AI-related coursework."
+    },
+    {
+      "role": "Graduate Research Assistant",
+      "details": "Research support in biomedical machine learning and neuroimaging projects."
+    }
+  ]
+}
