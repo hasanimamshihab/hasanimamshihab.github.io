@@ -121,10 +121,11 @@ code {
 }
 h1, h2, h3 { margin: 0; letter-spacing: -0.045em; }
 h1 {
-  max-width: 850px;
+  max-width: 760px;
   font-family: "Source Serif 4", Georgia, serif;
-  font-size: clamp(3.8rem, 9vw, 7.5rem);
-  line-height: 0.86;
+  font-size: clamp(3.3rem, 7vw, 6.2rem);
+  line-height: 0.92;
+  text-wrap: balance;
 }
 h2 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.02; }
 h3 { font-size: 1.2rem; }
@@ -327,7 +328,7 @@ p { color: var(--muted); line-height: 1.75; }
   .section-pad { width: min(100% - 26px, var(--max)); padding: 64px 0; }
   .site-header { width: min(100% - 20px, var(--max)); margin-top: 10px; }
   .brand-text { display: none; }
-  h1 { font-size: clamp(3.1rem, 18vw, 5rem); }
+  h1 { font-size: clamp(2.85rem, 16vw, 4.35rem); }
   .metrics, .focus-grid, .project-grid { grid-template-columns: 1fr; }
   .publication-item { grid-template-columns: 1fr; }
   .pub-toolbar { flex-direction: column; align-items: stretch; }
