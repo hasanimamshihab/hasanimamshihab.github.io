@@ -109,7 +109,8 @@ code {
   inset: 28px -70px 20px;
   width: calc(100% + 140px);
   height: calc(100% - 48px);
-  opacity: 0.58;
+  opacity: 0.82;
+  filter: saturate(1.2);
   pointer-events: none;
   -webkit-mask-image: radial-gradient(ellipse at center, #000 22%, rgba(0, 0, 0, 0.72) 58%, transparent 84%);
   mask-image: radial-gradient(ellipse at center, #000 22%, rgba(0, 0, 0, 0.72) 58%, transparent 84%);
@@ -389,7 +390,7 @@ p { color: var(--muted); line-height: 1.75; }
   }
   .hero, .split { grid-template-columns: 1fr; }
   .hero { padding-top: 52px; gap: 30px; }
-  .research-field { inset: 16px -26px 20px; width: calc(100% + 52px); opacity: 0.42; }
+  .research-field { inset: 16px -26px 20px; width: calc(100% + 52px); opacity: 0.64; }
   .metrics, .focus-grid, .project-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 620px) {

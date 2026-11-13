@@ -210,9 +210,9 @@ function setupResearchField() {
     nodes = Array.from({ length: count }, (_, index) => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.18,
-      vy: (Math.random() - 0.5) * 0.18,
-      radius: index % 9 === 0 ? 3.2 : 1.5 + Math.random() * 1.4,
+      vx: (Math.random() - 0.5) * 0.38,
+      vy: (Math.random() - 0.5) * 0.38,
+      radius: index % 9 === 0 ? 3.8 : 1.8 + Math.random() * 1.6,
       color: colors[index % colors.length],
       phase: Math.random() * Math.PI * 2
     }));
@@ -245,17 +245,24 @@ function setupResearchField() {
         context.beginPath();
         context.moveTo(node.x, node.y);
         context.lineTo(other.x, other.y);
-        context.strokeStyle = `rgba(${node.color}, ${(1 - distance / maxDistance) * 0.16})`;
-        context.lineWidth = 0.8;
+        context.strokeStyle = `rgba(${node.color}, ${(1 - distance / maxDistance) * 0.29})`;
+        context.lineWidth = 1;
         context.stroke();
       }
 
       const pulse = 0.82 + Math.sin(time * 0.0012 + node.phase) * 0.18;
+      if (index % 9 === 0) {
+        context.beginPath();
+        context.arc(node.x, node.y, 9 + Math.sin(time * 0.0015 + node.phase) * 3, 0, Math.PI * 2);
+        context.strokeStyle = `rgba(${node.color}, 0.24)`;
+        context.lineWidth = 1;
+        context.stroke();
+      }
       context.beginPath();
       context.arc(node.x, node.y, node.radius * pulse, 0, Math.PI * 2);
-      context.fillStyle = `rgba(${node.color}, ${index % 9 === 0 ? 0.9 : 0.58})`;
-      context.shadowColor = `rgba(${node.color}, 0.45)`;
-      context.shadowBlur = index % 9 === 0 ? 14 : 7;
+      context.fillStyle = `rgba(${node.color}, ${index % 9 === 0 ? 1 : 0.82})`;
+      context.shadowColor = `rgba(${node.color}, 0.62)`;
+      context.shadowBlur = index % 9 === 0 ? 18 : 9;
       context.fill();
       context.shadowBlur = 0;
     });
@@ -292,16 +299,17 @@ function setupResearchField() {
 
 async function init() {
   $('#year').textContent = new Date().getFullYear();
+  document.body.classList.add('motion-ready');
+  setupProfileParallax();
+  setupResearchField();
+
   const profile = await loadJSON('data/profile.json', defaultProfile);
   hydrateProfile({ ...defaultProfile, ...profile });
   allPublications = await loadJSON('data/publications.json', []);
   renderPublications(allPublications);
   $('#publication-search').addEventListener('input', filterPublications);
 
-  document.body.classList.add('motion-ready');
   setupRevealAnimations();
-  setupProfileParallax();
-  setupResearchField();
 
   const menuButton = $('.menu-button');
   const nav = $('.nav');
