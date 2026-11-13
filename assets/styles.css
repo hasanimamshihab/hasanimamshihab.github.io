@@ -87,12 +87,13 @@ code {
 .hero {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - 76px);
+  min-height: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 64px;
   align-items: center;
-  padding-top: 76px;
+  padding-top: 88px;
+  padding-bottom: 72px;
 }
 .research-field {
   position: absolute;
@@ -127,10 +128,10 @@ code {
 }
 h1, h2, h3 { margin: 0; letter-spacing: -0.045em; }
 h1 {
-  max-width: 760px;
+  max-width: 680px;
   font-family: "Source Serif 4", Georgia, serif;
-  font-size: clamp(3.3rem, 7vw, 6.2rem);
-  line-height: 0.92;
+  font-size: clamp(3rem, 5.6vw, 5.25rem);
+  line-height: 0.94;
   text-wrap: balance;
 }
 h2 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.02; }
@@ -173,6 +174,9 @@ p { color: var(--muted); line-height: 1.75; }
   padding: 22px;
   box-shadow: var(--shadow);
   transition: border-color 300ms ease, box-shadow 300ms ease;
+  width: min(100%, 360px);
+  justify-self: end;
+  padding: 18px;
 }
 .avatar-wrap {
   aspect-ratio: 1;
@@ -191,7 +195,7 @@ p { color: var(--muted); line-height: 1.75; }
   transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
-.profile-card-body { padding: 22px 4px 4px; }
+.profile-card-body { padding: 18px 2px 2px; }
 .profile-card h2 { font-size: clamp(1.35rem, 2.2vw, 1.65rem); line-height: 1.08; }
 .profile-card p { margin: 8px 0 18px; }
 .profile-links { display: grid; gap: 10px; }
@@ -199,7 +203,7 @@ p { color: var(--muted); line-height: 1.75; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
+  padding: 10px 13px;
   border-radius: 16px;
   background: rgba(239, 246, 246, 0.92);
   border: 1px solid var(--line);
@@ -207,6 +211,90 @@ p { color: var(--muted); line-height: 1.75; }
   font-weight: 700;
 }
 .profile-links a::after { content: "↗"; color: var(--accent); }
+
+.brain-lab {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.72fr) minmax(0, 1.28fr);
+  gap: 54px;
+  align-items: center;
+  padding-top: 54px;
+  padding-bottom: 64px;
+}
+.brain-lab-intro h2 { max-width: 560px; }
+.brain-lab-intro > p:not(.eyebrow, .concept-note) { max-width: 560px; font-size: 1.04rem; }
+.brain-mode-controls { display: flex; flex-wrap: wrap; gap: 9px; margin: 28px 0 22px; }
+.brain-mode-button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 220ms ease;
+}
+.brain-mode-button:hover { border-color: rgba(20, 127, 147, 0.38); color: var(--text); }
+.brain-mode-button.active { background: var(--text); border-color: var(--text); color: #ffffff; box-shadow: 0 8px 24px rgba(16, 42, 58, 0.16); }
+.brain-mode-copy { display: grid; gap: 7px; padding-left: 15px; border-left: 3px solid var(--accent); }
+.brain-mode-copy strong { font-size: 1rem; }
+.brain-mode-copy span { color: var(--muted); line-height: 1.6; }
+.concept-note { margin: 20px 0 0; font-size: 0.78rem; line-height: 1.5; }
+.brain-stage {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: linear-gradient(145deg, #f7fbfb, #ffffff 55%, #fbf5f0);
+  box-shadow: 0 24px 70px rgba(42, 72, 84, 0.13);
+}
+.brain-stage-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.brain-status { display: inline-flex; align-items: center; gap: 9px; }
+.brain-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-three); box-shadow: 0 0 0 6px rgba(46, 155, 112, 0.12); }
+.brain-scan-code { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.brain-viz { display: block; width: 100%; height: auto; min-height: 360px; }
+.brain-shell { transform-box: fill-box; transform-origin: center; animation: brain-float 7s ease-in-out infinite; }
+.brain-surface { fill: url(#brainFill); stroke: #6f9aaa; stroke-width: 2.5; }
+.brain-midline, .brain-sulci path { fill: none; stroke: rgba(63, 105, 121, 0.28); stroke-width: 2; stroke-linecap: round; }
+.brain-sulci path { stroke-width: 1.4; }
+.brain-layer { opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
+.brain-layer.active { opacity: 1; }
+.fmri-lines line { stroke: #16849a; stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 6 9; animation: signal-flow 3.2s linear infinite; }
+.fmri-nodes circle { fill: #1593a7; stroke: #ffffff; stroke-width: 3; animation: region-pulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.fmri-nodes circle:nth-child(3n + 2) { fill: #e08b55; animation-delay: -0.8s; }
+.fmri-nodes circle:nth-child(3n) { fill: #3d78a0; animation-delay: -1.5s; }
+.dti-tracts path { fill: none; stroke: #d77c49; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 12 12; animation: tract-flow 3.8s linear infinite; }
+.dti-tracts path:nth-child(even) { stroke: #2c8999; animation-duration: 4.6s; animation-direction: reverse; }
+.dti-seeds circle { fill: #d77c49; stroke: #ffffff; stroke-width: 2; }
+.atrophy-outline { fill: rgba(224, 139, 85, 0.1); stroke: #d77c49; stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: atrophy-cycle 6s ease-in-out infinite; }
+.ventricles path { fill: rgba(57, 111, 145, 0.18); stroke: #397b96; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: ventricle-change 6s ease-in-out infinite; }
+.atrophy-zones circle { fill: rgba(224, 139, 85, 0.24); animation: region-pulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.atrophy-zones circle:nth-child(even) { animation-delay: -1.3s; }
+.orientation-label { fill: #75909e; font-size: 15px; font-weight: 800; }
+.progression-strip { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px 24px 25px; color: var(--muted); font-size: 0.72rem; font-weight: 800; }
+.progression-strip span:nth-child(2) { text-align: center; }
+.progression-strip span:nth-child(3) { text-align: right; }
+.progression-line { position: absolute; left: 24px; right: 24px; bottom: 13px; height: 3px; border-radius: 999px; background: #dce8ea; overflow: hidden; }
+.progression-line b { display: block; width: 38%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-two)); animation: progression-scan 6s ease-in-out infinite alternate; }
+
+@keyframes brain-float { 0%, 100% { transform: translateY(0) rotate(-0.6deg); } 50% { transform: translateY(-5px) rotate(0.7deg); } }
+@keyframes signal-flow { to { stroke-dashoffset: -60; } }
+@keyframes tract-flow { to { stroke-dashoffset: -96; } }
+@keyframes region-pulse { 0%, 100% { transform: scale(0.82); opacity: 0.68; } 50% { transform: scale(1.25); opacity: 1; } }
+@keyframes atrophy-cycle { 0%, 18% { transform: scale(1); opacity: 0.3; } 82%, 100% { transform: scale(0.9); opacity: 0.88; } }
+@keyframes ventricle-change { 0%, 18% { transform: scale(0.78); } 82%, 100% { transform: scale(1.24); } }
+@keyframes progression-scan { from { transform: translateX(0); } to { transform: translateX(160%); } }
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -381,6 +469,8 @@ p { color: var(--muted); line-height: 1.75; }
   }
   .hero, .split { grid-template-columns: 1fr; }
   .hero { padding-top: 52px; gap: 30px; }
+  .profile-card { justify-self: center; width: min(100%, 430px); }
+  .brain-lab { grid-template-columns: 1fr; gap: 34px; }
   .research-field { inset: 16px -26px 20px; width: calc(100% + 52px); opacity: 0.5; }
   .metrics, .focus-grid, .project-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -388,7 +478,12 @@ p { color: var(--muted); line-height: 1.75; }
   .section-pad { width: min(100% - 26px, var(--max)); padding: 64px 0; }
   .site-header { width: min(100% - 20px, var(--max)); margin-top: 10px; }
   .brand-text { display: none; }
-  h1 { font-size: clamp(2.85rem, 16vw, 4.35rem); }
+  h1 { font-size: clamp(2.45rem, 13vw, 3.75rem); }
+  .brain-lab { padding-top: 36px; }
+  .brain-stage { border-radius: 24px; }
+  .brain-stage-bar { padding: 14px 16px; }
+  .brain-viz { min-height: 260px; }
+  .progression-strip { padding-inline: 16px; }
   .metrics, .focus-grid, .project-grid { grid-template-columns: 1fr; }
   .publication-item { grid-template-columns: 1fr; }
   .pub-toolbar { flex-direction: column; align-items: stretch; }
@@ -401,4 +496,5 @@ p { color: var(--muted); line-height: 1.75; }
   .motion-ready .hero-copy > *, .motion-ready .profile-card { animation: none; }
   .reveal, .reveal.is-visible { opacity: 1; transform: none; transition: none; }
   .avatar, .button, .metric-card, .timeline-item, .publication-item, .project-card, .focus-card { transition: none; }
+  .brain-shell, .fmri-lines line, .fmri-nodes circle, .dti-tracts path, .atrophy-outline, .ventricles path, .atrophy-zones circle, .progression-line b { animation: none; }
 }

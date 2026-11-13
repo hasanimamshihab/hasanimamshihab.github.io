@@ -135,7 +135,7 @@ function escapeAttribute(value) {
 }
 
 function registerRevealElements(root = document) {
-  const selector = '.section-heading, .metric-card, .timeline-item, .focus-card, .publication-item, .project-card, .skills-section .chip-cloud, .contact-card';
+  const selector = '.section-heading, .brain-lab-intro, .brain-stage, .metric-card, .timeline-item, .focus-card, .publication-item, .project-card, .skills-section .chip-cloud, .contact-card';
   $$(selector, root).forEach((node, index) => {
     if (!node.classList.contains('reveal')) {
       node.classList.add('reveal');
@@ -297,11 +297,105 @@ function setupResearchField() {
   frameId = requestAnimationFrame(draw);
 }
 
+function setupBrainExplorer() {
+  const panel = $('.brain-lab');
+  if (!panel) return;
+
+  const stage = $('.brain-stage', panel);
+  const buttons = $$('[data-brain-mode]', panel);
+  const layers = $$('[data-brain-layer]', panel);
+  const title = $('#brain-mode-title');
+  const description = $('#brain-mode-description');
+  const stageLabel = $('#brain-stage-label');
+  const scanCode = $('#brain-scan-code');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const modes = {
+    fmri: {
+      title: 'Resting-state functional connectivity',
+      description: 'Pulsing edges represent changing synchronization between distributed brain regions.',
+      label: 'Functional connectivity',
+      code: 'RS-fMRI'
+    },
+    dti: {
+      title: 'Structural connectivity with diffusion MRI',
+      description: 'Flowing streamlines represent white-matter pathways and changes in tract integrity.',
+      label: 'Structural connectivity',
+      code: 'DTI'
+    },
+    atrophy: {
+      title: 'Structural MRI and atrophy progression',
+      description: 'The contracting cortical outline and expanding ventricles represent progressive tissue loss.',
+      label: 'Atrophy progression',
+      code: 'T1 MRI'
+    }
+  };
+  let currentIndex = 0;
+  let timer;
+
+  function selectMode(mode) {
+    const details = modes[mode];
+    if (!details) return;
+    currentIndex = buttons.findIndex((button) => button.dataset.brainMode === mode);
+    stage.dataset.mode = mode;
+    buttons.forEach((button) => {
+      const active = button.dataset.brainMode === mode;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
+    });
+    layers.forEach((layer) => {
+      const active = layer.dataset.brainLayer === mode;
+      layer.classList.toggle('active', active);
+      layer.setAttribute('aria-hidden', String(!active));
+    });
+    title.textContent = details.title;
+    description.textContent = details.description;
+    stageLabel.textContent = details.label;
+    scanCode.textContent = details.code;
+  }
+
+  function startRotation() {
+    if (reduceMotion || timer) return;
+    timer = window.setInterval(() => {
+      currentIndex = (currentIndex + 1) % buttons.length;
+      selectMode(buttons[currentIndex].dataset.brainMode);
+    }, 6000);
+  }
+
+  function stopRotation() {
+    window.clearInterval(timer);
+    timer = undefined;
+  }
+
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      selectMode(button.dataset.brainMode);
+      stopRotation();
+      startRotation();
+    });
+    button.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      const offset = event.key === 'ArrowRight' ? 1 : -1;
+      const nextIndex = (index + offset + buttons.length) % buttons.length;
+      buttons[nextIndex].focus();
+      selectMode(buttons[nextIndex].dataset.brainMode);
+    });
+  });
+  panel.addEventListener('pointerenter', stopRotation);
+  panel.addEventListener('pointerleave', startRotation);
+  panel.addEventListener('focusin', stopRotation);
+  panel.addEventListener('focusout', startRotation);
+
+  selectMode('fmri');
+  startRotation();
+}
+
 async function init() {
   $('#year').textContent = new Date().getFullYear();
   document.body.classList.add('motion-ready');
   setupProfileParallax();
   setupResearchField();
+  setupBrainExplorer();
 
   const profile = await loadJSON('data/profile.json', defaultProfile);
   hydrateProfile({ ...defaultProfile, ...profile });

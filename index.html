@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=20261113-1" />
+  <link rel="stylesheet" href="assets/styles.css?v=20261113-2" />
 </head>
 <body>
   <div class="page-glow glow-one"></div>
@@ -63,6 +63,121 @@
           </div>
         </div>
       </aside>
+    </section>
+
+    <section class="brain-lab section-pad" id="brain-visualization" aria-labelledby="brain-lab-title">
+      <div class="brain-lab-intro">
+        <p class="eyebrow">Research in motion</p>
+        <h2 id="brain-lab-title">How brain systems change across Alzheimer’s disease</h2>
+        <p>Explore a conceptual view of the multimodal signals I study across resting-state fMRI, diffusion MRI, and structural MRI.</p>
+
+        <div class="brain-mode-controls" role="tablist" aria-label="Brain imaging visualization">
+          <button class="brain-mode-button active" type="button" role="tab" aria-selected="true" data-brain-mode="fmri">fMRI networks</button>
+          <button class="brain-mode-button" type="button" role="tab" aria-selected="false" data-brain-mode="dti">DTI pathways</button>
+          <button class="brain-mode-button" type="button" role="tab" aria-selected="false" data-brain-mode="atrophy">Atrophy</button>
+        </div>
+
+        <div class="brain-mode-copy" aria-live="polite">
+          <strong id="brain-mode-title">Resting-state functional connectivity</strong>
+          <span id="brain-mode-description">Pulsing edges represent changing synchronization between distributed brain regions.</span>
+        </div>
+        <p class="concept-note">Conceptual visualization for research communication; not patient data or a diagnostic model.</p>
+      </div>
+
+      <div class="brain-stage" data-mode="fmri">
+        <div class="brain-stage-bar">
+          <span class="brain-status"><i></i><span id="brain-stage-label">Functional connectivity</span></span>
+          <span class="brain-scan-code" id="brain-scan-code">RS-fMRI</span>
+        </div>
+
+        <svg class="brain-viz" viewBox="0 0 720 430" role="img" aria-labelledby="brain-viz-title brain-viz-desc">
+          <title id="brain-viz-title">Animated multimodal brain research visualization</title>
+          <desc id="brain-viz-desc">A conceptual brain diagram switches between functional connectivity, structural pathways, and atrophy progression.</desc>
+          <defs>
+            <linearGradient id="brainFill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#e2f3f4" />
+              <stop offset="0.55" stop-color="#f7fbfa" />
+              <stop offset="1" stop-color="#f7e9df" />
+            </linearGradient>
+            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+            <path id="brainShape" d="M360 45 C314 23 257 30 211 57 C158 87 123 139 118 198 C112 253 135 307 178 341 C217 372 270 383 317 365 C337 357 350 344 360 327 C370 344 383 357 403 365 C450 383 503 372 542 341 C585 307 608 253 602 198 C597 139 562 87 509 57 C463 30 406 23 360 45 Z" />
+            <clipPath id="brainClip"><use href="#brainShape" /></clipPath>
+          </defs>
+
+          <g class="brain-shell">
+            <use href="#brainShape" class="brain-surface" />
+            <path class="brain-midline" d="M360 57 C346 92 371 124 357 160 C345 193 370 224 356 261 C348 283 358 307 360 327" />
+            <g class="brain-sulci">
+              <path d="M179 170 C220 135 271 134 315 154" />
+              <path d="M157 224 C214 198 266 205 312 236" />
+              <path d="M194 294 C236 266 278 272 320 302" />
+              <path d="M541 170 C500 135 449 134 405 154" />
+              <path d="M563 224 C506 198 454 205 408 236" />
+              <path d="M526 294 C484 266 442 272 400 302" />
+            </g>
+
+            <g class="brain-layer active" data-brain-layer="fmri">
+              <g class="fmri-lines">
+                <line x1="205" y1="132" x2="294" y2="188" />
+                <line x1="205" y1="132" x2="433" y2="125" />
+                <line x1="294" y1="188" x2="472" y2="214" />
+                <line x1="247" y1="282" x2="472" y2="214" />
+                <line x1="247" y1="282" x2="419" y2="303" />
+                <line x1="433" y1="125" x2="522" y2="166" />
+                <line x1="522" y1="166" x2="419" y2="303" />
+                <line x1="294" y1="188" x2="247" y2="282" />
+                <line x1="330" y1="103" x2="389" y2="232" />
+                <line x1="389" y1="232" x2="419" y2="303" />
+              </g>
+              <g class="fmri-nodes" filter="url(#softGlow)">
+                <circle cx="205" cy="132" r="8" /><circle cx="294" cy="188" r="7" />
+                <circle cx="247" cy="282" r="9" /><circle cx="330" cy="103" r="6" />
+                <circle cx="433" cy="125" r="8" /><circle cx="472" cy="214" r="7" />
+                <circle cx="522" cy="166" r="6" /><circle cx="419" cy="303" r="9" />
+                <circle cx="389" cy="232" r="6" />
+              </g>
+            </g>
+
+            <g class="brain-layer" data-brain-layer="dti" aria-hidden="true">
+              <g class="dti-tracts" clip-path="url(#brainClip)">
+                <path d="M167 245 C228 103 477 83 557 228" />
+                <path d="M180 280 C256 151 451 126 541 271" />
+                <path d="M204 112 C300 232 407 248 519 116" />
+                <path d="M220 327 C288 227 429 201 501 327" />
+                <path d="M267 78 C240 171 255 270 327 351" />
+                <path d="M453 78 C480 171 465 270 393 351" />
+                <path d="M153 201 C258 194 450 306 575 207" />
+              </g>
+              <g class="dti-seeds">
+                <circle cx="180" cy="280" r="5" /><circle cx="541" cy="271" r="5" />
+                <circle cx="204" cy="112" r="5" /><circle cx="519" cy="116" r="5" />
+              </g>
+            </g>
+
+            <g class="brain-layer" data-brain-layer="atrophy" aria-hidden="true">
+              <use href="#brainShape" class="atrophy-outline" />
+              <g class="ventricles">
+                <path d="M322 165 C292 184 294 230 327 242 C344 228 347 198 339 174 Z" />
+                <path d="M398 165 C428 184 426 230 393 242 C376 228 373 198 381 174 Z" />
+              </g>
+              <g class="atrophy-zones" filter="url(#softGlow)">
+                <circle cx="235" cy="172" r="28" /><circle cx="485" cy="172" r="28" />
+                <circle cx="277" cy="289" r="24" /><circle cx="443" cy="289" r="24" />
+              </g>
+            </g>
+          </g>
+          <text class="orientation-label" x="90" y="218">L</text>
+          <text class="orientation-label" x="620" y="218">R</text>
+        </svg>
+
+        <div class="progression-strip" aria-label="Conceptual Alzheimer’s disease progression">
+          <span>Baseline</span><span>Early change</span><span>Progression</span>
+          <i class="progression-line"><b></b></i>
+        </div>
+      </div>
     </section>
 
     <section class="section-pad metrics" aria-label="Highlights">
@@ -140,6 +255,6 @@
     <a href="#top">Back to top ↑</a>
   </footer>
 
-  <script src="assets/app.js?v=20261113-1"></script>
+  <script src="assets/app.js?v=20261113-2"></script>
 </body>
 </html>
