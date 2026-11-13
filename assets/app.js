@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
@@ -391,12 +394,11 @@ function setupBrainExplorer() {
   startRotation();
 }
 
-function setupGlassBrain() {
+async function setupGlassBrain() {
   const canvas = $('#brain-canvas');
   const stage = $('.brain-stage');
   const panel = $('.brain-lab');
-  const THREE = window.THREE;
-  if (!canvas || !stage || !panel || !THREE) return;
+  if (!canvas || !stage || !panel) return;
 
   let renderer;
   try {
@@ -438,57 +440,61 @@ function setupGlassBrain() {
   scene.add(rimLight);
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x9bdde3,
+    color: 0xa7e0e4,
     transparent: true,
-    opacity: 0.3,
-    transmission: 0.78,
-    thickness: 0.85,
-    roughness: 0.12,
+    opacity: 0.62,
+    transmission: 0.58,
+    thickness: 0.65,
+    roughness: 0.2,
     metalness: 0,
     clearcoat: 1,
-    clearcoatRoughness: 0.1,
+    clearcoatRoughness: 0.16,
     side: THREE.DoubleSide,
     depthWrite: false
   });
   const wireMaterial = new THREE.MeshBasicMaterial({
-    color: 0x247c91,
+    color: 0x1d7182,
     transparent: true,
-    opacity: 0.09,
+    opacity: 0.035,
     wireframe: true,
     depthWrite: false
   });
 
-  function buildLobe(radius, segments, scale, position) {
-    const geometry = new THREE.SphereGeometry(radius, segments, Math.round(segments * 0.72));
-    const positions = geometry.attributes.position;
-    for (let index = 0; index < positions.count; index += 1) {
-      const x = positions.getX(index);
-      const y = positions.getY(index);
-      const z = positions.getZ(index);
-      const folds = 1
-        + Math.sin(x * 9 + y * 5) * 0.025
-        + Math.sin(y * 11 - z * 5) * 0.022
-        + Math.sin(z * 10 + x * 4) * 0.018;
-      positions.setXYZ(index, x * scale.x * folds, y * scale.y * folds, z * scale.z * folds);
-    }
-    geometry.computeVertexNormals();
-    const surface = new THREE.Mesh(geometry, glassMaterial);
-    const wire = new THREE.Mesh(geometry, wireMaterial);
-    surface.position.copy(position);
-    wire.position.copy(position);
-    shellGroup.add(surface, wire);
-    return surface;
+  try {
+    const loader = new GLTFLoader();
+    const gltf = await loader.loadAsync('assets/brain.glb');
+    const anatomicalBrain = gltf.scene;
+    const bounds = new THREE.Box3().setFromObject(anatomicalBrain);
+    const center = bounds.getCenter(new THREE.Vector3());
+    const size = bounds.getSize(new THREE.Vector3());
+    const scale = 3.45 / Math.max(size.x, size.y, size.z);
+
+    anatomicalBrain.scale.setScalar(scale);
+    anatomicalBrain.position.copy(center).multiplyScalar(-scale);
+    const surfaceMeshes = [];
+    anatomicalBrain.traverse((object) => {
+      if (!object.isMesh) return;
+      const structureName = object.name.toLowerCase();
+      if (structureName.includes('ventricle')) {
+        object.visible = false;
+        return;
+      }
+      object.geometry.computeVertexNormals();
+      object.material = glassMaterial;
+      surfaceMeshes.push(object);
+    });
+    surfaceMeshes.forEach((object) => {
+      const contour = new THREE.Mesh(object.geometry, wireMaterial);
+      contour.position.copy(object.position);
+      contour.quaternion.copy(object.quaternion);
+      contour.scale.copy(object.scale);
+      object.parent.add(contour);
+    });
+    shellGroup.add(anatomicalBrain);
+  } catch (error) {
+    console.warn('Anatomical brain model unavailable:', error);
+    return;
   }
-
-  buildLobe(1.25, 56, new THREE.Vector3(0.92, 1.08, 1), new THREE.Vector3(-0.61, 0.18, 0));
-  buildLobe(1.25, 56, new THREE.Vector3(0.92, 1.08, 1), new THREE.Vector3(0.61, 0.18, 0));
-  buildLobe(0.68, 42, new THREE.Vector3(1.25, 0.62, 0.82), new THREE.Vector3(0, -1.05, -0.34));
-
-  const stemGeometry = new THREE.CapsuleGeometry(0.18, 0.62, 8, 18);
-  const stem = new THREE.Mesh(stemGeometry, glassMaterial);
-  stem.position.set(0, -1.55, -0.18);
-  stem.rotation.z = 0.08;
-  shellGroup.add(stem);
 
   const nodePositions = [
     [-1.12, 0.72, 0.38], [-0.62, 0.24, 0.96], [-0.95, -0.52, 0.48],
