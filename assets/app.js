@@ -3,7 +3,7 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
 
 const defaultProfile = {
   name: "Md Hasan Imam Shihab",
-  short_name: "Hasan Imam",
+  short_name: "Md Hasan Imam Shihab",
   title: "PhD Student in Computer Science",
   affiliation: "Indiana University",
   email: "h.imamshihab@gmail.com",
@@ -189,7 +189,7 @@ function setupResearchField() {
   if (!canvas || !hero || reduceMotion || saveData) return;
 
   const context = canvas.getContext('2d');
-  const colors = ['118, 228, 247', '124, 242, 180', '168, 137, 255'];
+  const colors = ['20, 127, 147', '46, 119, 155', '214, 126, 75'];
   let width = 0;
   let height = 0;
   let nodes = [];
