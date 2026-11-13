@@ -264,6 +264,49 @@ p { color: var(--muted); line-height: 1.75; }
 .brain-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-three); box-shadow: 0 0 0 6px rgba(46, 155, 112, 0.12); }
 .brain-scan-code { color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .brain-viz { display: block; width: 100%; height: auto; min-height: 360px; }
+.brain-3d-wrap {
+  position: relative;
+  display: none;
+  min-height: 390px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 48% 44%, rgba(197, 238, 239, 0.5), transparent 32%),
+    radial-gradient(circle at 68% 62%, rgba(245, 208, 184, 0.3), transparent 27%);
+}
+.brain-stage.three-ready .brain-3d-wrap { display: block; }
+.brain-stage.three-ready .brain-viz-fallback { display: none; }
+.brain-canvas {
+  display: block;
+  width: 100%;
+  height: 410px;
+  cursor: grab;
+  touch-action: none;
+}
+.brain-canvas:active { cursor: grabbing; }
+.brain-drag-hint {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+.brain-axis {
+  position: absolute;
+  top: 50%;
+  color: #78929f;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+.brain-axis-left { left: 18px; }
+.brain-axis-right { right: 18px; }
 .brain-shell { transform-box: fill-box; transform-origin: center; animation: brain-float 7s ease-in-out infinite; }
 .brain-surface { fill: url(#brainFill); stroke: #6f9aaa; stroke-width: 2.5; }
 .brain-midline, .brain-sulci path { fill: none; stroke: rgba(63, 105, 121, 0.28); stroke-width: 2; stroke-linecap: round; }
@@ -282,11 +325,25 @@ p { color: var(--muted); line-height: 1.75; }
 .atrophy-zones circle { fill: rgba(224, 139, 85, 0.24); animation: region-pulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .atrophy-zones circle:nth-child(even) { animation-delay: -1.3s; }
 .orientation-label { fill: #75909e; font-size: 15px; font-weight: 800; }
-.progression-strip { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px 24px 25px; color: var(--muted); font-size: 0.72rem; font-weight: 800; }
-.progression-strip span:nth-child(2) { text-align: center; }
-.progression-strip span:nth-child(3) { text-align: right; }
-.progression-line { position: absolute; left: 24px; right: 24px; bottom: 13px; height: 3px; border-radius: 999px; background: #dce8ea; overflow: hidden; }
-.progression-line b { display: block; width: 38%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-two)); animation: progression-scan 6s ease-in-out infinite alternate; }
+.clinical-trajectory { padding: 2px 20px 20px; border-top: 1px solid var(--line); background: rgba(255, 255, 255, 0.6); }
+.trajectory-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px 4px; }
+.trajectory-heading strong { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.trajectory-heading span { padding: 5px 8px; border-radius: 999px; background: #eef6f5; color: var(--accent); font-size: 0.65rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; }
+.trajectory-chart { display: block; width: 100%; height: auto; max-height: 190px; overflow: visible; }
+.trajectory-grid line { stroke: #dbe7e9; stroke-width: 1; }
+.trajectory-axis-labels { fill: #718a97; font-size: 11px; font-weight: 700; }
+.trajectory-axis-labels .axis-title { fill: #395a6b; font-size: 10px; font-weight: 900; letter-spacing: 0.08em; }
+.trajectory-line { fill: none; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 900; animation: chart-draw 5.5s ease-in-out infinite alternate; }
+.cdr-line { stroke: #db7f4b; }
+.mmse-line { stroke: #16879a; animation-delay: -1.2s; }
+.trajectory-dots circle { stroke: #ffffff; stroke-width: 2; animation: chart-dot 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.cdr-dots circle { fill: #db7f4b; }
+.mmse-dots circle { fill: #16879a; animation-delay: -1s; }
+.trajectory-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; color: var(--muted); font-size: 0.72rem; font-weight: 800; }
+.trajectory-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.trajectory-legend i { width: 18px; height: 3px; border-radius: 999px; }
+.cdr-key { background: #db7f4b; }
+.mmse-key { background: #16879a; }
 
 @keyframes brain-float { 0%, 100% { transform: translateY(0) rotate(-0.6deg); } 50% { transform: translateY(-5px) rotate(0.7deg); } }
 @keyframes signal-flow { to { stroke-dashoffset: -60; } }
@@ -294,7 +351,8 @@ p { color: var(--muted); line-height: 1.75; }
 @keyframes region-pulse { 0%, 100% { transform: scale(0.82); opacity: 0.68; } 50% { transform: scale(1.25); opacity: 1; } }
 @keyframes atrophy-cycle { 0%, 18% { transform: scale(1); opacity: 0.3; } 82%, 100% { transform: scale(0.9); opacity: 0.88; } }
 @keyframes ventricle-change { 0%, 18% { transform: scale(0.78); } 82%, 100% { transform: scale(1.24); } }
-@keyframes progression-scan { from { transform: translateX(0); } to { transform: translateX(160%); } }
+@keyframes chart-draw { 0% { stroke-dashoffset: 900; opacity: 0.35; } 58%, 100% { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes chart-dot { 0%, 100% { transform: scale(0.8); } 50% { transform: scale(1.35); } }
 .metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -483,7 +541,11 @@ p { color: var(--muted); line-height: 1.75; }
   .brain-stage { border-radius: 24px; }
   .brain-stage-bar { padding: 14px 16px; }
   .brain-viz { min-height: 260px; }
-  .progression-strip { padding-inline: 16px; }
+  .brain-3d-wrap { min-height: 300px; }
+  .brain-canvas { height: 310px; }
+  .brain-drag-hint { right: 12px; bottom: 10px; }
+  .clinical-trajectory { padding-inline: 10px; }
+  .trajectory-chart { max-height: 170px; }
   .metrics, .focus-grid, .project-grid { grid-template-columns: 1fr; }
   .publication-item { grid-template-columns: 1fr; }
   .pub-toolbar { flex-direction: column; align-items: stretch; }
@@ -496,5 +558,5 @@ p { color: var(--muted); line-height: 1.75; }
   .motion-ready .hero-copy > *, .motion-ready .profile-card { animation: none; }
   .reveal, .reveal.is-visible { opacity: 1; transform: none; transition: none; }
   .avatar, .button, .metric-card, .timeline-item, .publication-item, .project-card, .focus-card { transition: none; }
-  .brain-shell, .fmri-lines line, .fmri-nodes circle, .dti-tracts path, .atrophy-outline, .ventricles path, .atrophy-zones circle, .progression-line b { animation: none; }
+  .brain-shell, .fmri-lines line, .fmri-nodes circle, .dti-tracts path, .atrophy-outline, .ventricles path, .atrophy-zones circle, .trajectory-line, .trajectory-dots circle { animation: none; }
 }

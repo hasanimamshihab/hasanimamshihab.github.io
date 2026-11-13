@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=20261113-2" />
+  <link rel="stylesheet" href="assets/styles.css?v=20261113-3" />
 </head>
 <body>
   <div class="page-glow glow-one"></div>
@@ -90,7 +90,14 @@
           <span class="brain-scan-code" id="brain-scan-code">RS-fMRI</span>
         </div>
 
-        <svg class="brain-viz" viewBox="0 0 720 430" role="img" aria-labelledby="brain-viz-title brain-viz-desc">
+        <div class="brain-3d-wrap">
+          <canvas id="brain-canvas" class="brain-canvas" role="img" aria-label="Interactive rotating glass brain with functional, structural, and atrophy views"></canvas>
+          <span class="brain-drag-hint">Drag to rotate</span>
+          <span class="brain-axis brain-axis-left">L</span>
+          <span class="brain-axis brain-axis-right">R</span>
+        </div>
+
+        <svg class="brain-viz brain-viz-fallback" viewBox="0 0 720 430" role="img" aria-labelledby="brain-viz-title brain-viz-desc">
           <title id="brain-viz-title">Animated multimodal brain research visualization</title>
           <desc id="brain-viz-desc">A conceptual brain diagram switches between functional connectivity, structural pathways, and atrophy progression.</desc>
           <defs>
@@ -173,9 +180,31 @@
           <text class="orientation-label" x="620" y="218">R</text>
         </svg>
 
-        <div class="progression-strip" aria-label="Conceptual Alzheimer’s disease progression">
-          <span>Baseline</span><span>Early change</span><span>Progression</span>
-          <i class="progression-line"><b></b></i>
+        <div class="clinical-trajectory">
+          <div class="trajectory-heading">
+            <strong>Illustrative clinical progression</strong>
+            <span>Conceptual</span>
+          </div>
+          <svg class="trajectory-chart" viewBox="0 0 680 210" role="img" aria-labelledby="trajectory-title trajectory-desc">
+            <title id="trajectory-title">Conceptual CDR and MMSE progression</title>
+            <desc id="trajectory-desc">An illustrative chart where CDR increases and MMSE decreases from baseline through progression. It does not represent patient data.</desc>
+            <g class="trajectory-grid">
+              <line x1="58" y1="35" x2="622" y2="35" /><line x1="58" y1="78" x2="622" y2="78" />
+              <line x1="58" y1="121" x2="622" y2="121" /><line x1="58" y1="164" x2="622" y2="164" />
+              <line x1="58" y1="26" x2="58" y2="174" /><line x1="622" y1="26" x2="622" y2="174" />
+            </g>
+            <g class="trajectory-axis-labels">
+              <text x="17" y="39">3</text><text x="17" y="82">2</text><text x="17" y="125">1</text><text x="17" y="168">0</text>
+              <text x="635" y="39">30</text><text x="635" y="82">24</text><text x="635" y="125">18</text><text x="635" y="168">12</text>
+              <text class="axis-title" x="17" y="18">CDR</text><text class="axis-title" x="620" y="18">MMSE</text>
+              <text x="58" y="198">Baseline</text><text x="306" y="198">Early change</text><text x="552" y="198">Progression</text>
+            </g>
+            <path class="trajectory-line cdr-line" d="M58 164 C170 161 242 149 318 118 C408 81 503 50 622 35" />
+            <path class="trajectory-line mmse-line" d="M58 35 C165 39 245 58 321 82 C412 111 510 146 622 164" />
+            <g class="trajectory-dots cdr-dots"><circle cx="58" cy="164" r="5" /><circle cx="318" cy="118" r="5" /><circle cx="622" cy="35" r="5" /></g>
+            <g class="trajectory-dots mmse-dots"><circle cx="58" cy="35" r="5" /><circle cx="321" cy="82" r="5" /><circle cx="622" cy="164" r="5" /></g>
+          </svg>
+          <div class="trajectory-legend"><span><i class="cdr-key"></i>CDR increases</span><span><i class="mmse-key"></i>MMSE decreases</span></div>
         </div>
       </div>
     </section>
@@ -255,6 +284,7 @@
     <a href="#top">Back to top ↑</a>
   </footer>
 
-  <script src="assets/app.js?v=20261113-2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
+  <script src="assets/app.js?v=20261113-3"></script>
 </body>
 </html>

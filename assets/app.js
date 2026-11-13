@@ -351,6 +351,7 @@ function setupBrainExplorer() {
     description.textContent = details.description;
     stageLabel.textContent = details.label;
     scanCode.textContent = details.code;
+    panel.dispatchEvent(new CustomEvent('brainmodechange', { detail: { mode } }));
   }
 
   function startRotation() {
@@ -390,12 +391,273 @@ function setupBrainExplorer() {
   startRotation();
 }
 
+function setupGlassBrain() {
+  const canvas = $('#brain-canvas');
+  const stage = $('.brain-stage');
+  const panel = $('.brain-lab');
+  const THREE = window.THREE;
+  if (!canvas || !stage || !panel || !THREE) return;
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+  } catch (error) {
+    console.warn('WebGL glass brain unavailable:', error);
+    return;
+  }
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  const brain = new THREE.Group();
+  const shellGroup = new THREE.Group();
+  const fmriGroup = new THREE.Group();
+  const dtiGroup = new THREE.Group();
+  const atrophyGroup = new THREE.Group();
+  const fmriNodes = [];
+  const tractMaterials = [];
+  let currentMode = stage.dataset.mode || 'fmri';
+  let frameId = 0;
+  let active = true;
+  let dragging = false;
+  let lastPointerX = 0;
+  let targetRotationX = -0.08;
+
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+  if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  camera.position.set(0, 0.05, 7.5);
+  camera.lookAt(0, 0, 0);
+  scene.add(new THREE.HemisphereLight(0xdaf7f7, 0xe3b99b, 2.1));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+  keyLight.position.set(3, 4, 6);
+  scene.add(keyLight);
+  const rimLight = new THREE.DirectionalLight(0x67d3df, 2.2);
+  rimLight.position.set(-4, 1, -3);
+  scene.add(rimLight);
+
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x9bdde3,
+    transparent: true,
+    opacity: 0.3,
+    transmission: 0.78,
+    thickness: 0.85,
+    roughness: 0.12,
+    metalness: 0,
+    clearcoat: 1,
+    clearcoatRoughness: 0.1,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const wireMaterial = new THREE.MeshBasicMaterial({
+    color: 0x247c91,
+    transparent: true,
+    opacity: 0.09,
+    wireframe: true,
+    depthWrite: false
+  });
+
+  function buildLobe(radius, segments, scale, position) {
+    const geometry = new THREE.SphereGeometry(radius, segments, Math.round(segments * 0.72));
+    const positions = geometry.attributes.position;
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index);
+      const y = positions.getY(index);
+      const z = positions.getZ(index);
+      const folds = 1
+        + Math.sin(x * 9 + y * 5) * 0.025
+        + Math.sin(y * 11 - z * 5) * 0.022
+        + Math.sin(z * 10 + x * 4) * 0.018;
+      positions.setXYZ(index, x * scale.x * folds, y * scale.y * folds, z * scale.z * folds);
+    }
+    geometry.computeVertexNormals();
+    const surface = new THREE.Mesh(geometry, glassMaterial);
+    const wire = new THREE.Mesh(geometry, wireMaterial);
+    surface.position.copy(position);
+    wire.position.copy(position);
+    shellGroup.add(surface, wire);
+    return surface;
+  }
+
+  buildLobe(1.25, 56, new THREE.Vector3(0.92, 1.08, 1), new THREE.Vector3(-0.61, 0.18, 0));
+  buildLobe(1.25, 56, new THREE.Vector3(0.92, 1.08, 1), new THREE.Vector3(0.61, 0.18, 0));
+  buildLobe(0.68, 42, new THREE.Vector3(1.25, 0.62, 0.82), new THREE.Vector3(0, -1.05, -0.34));
+
+  const stemGeometry = new THREE.CapsuleGeometry(0.18, 0.62, 8, 18);
+  const stem = new THREE.Mesh(stemGeometry, glassMaterial);
+  stem.position.set(0, -1.55, -0.18);
+  stem.rotation.z = 0.08;
+  shellGroup.add(stem);
+
+  const nodePositions = [
+    [-1.12, 0.72, 0.38], [-0.62, 0.24, 0.96], [-0.95, -0.52, 0.48],
+    [-0.18, 0.88, 0.72], [0.34, 0.32, 1.04], [0.94, 0.72, 0.42],
+    [1.18, 0.02, 0.22], [0.72, -0.66, 0.54], [0.03, -0.42, 1.12],
+    [-0.24, 0.1, -1.05], [0.92, -0.18, -0.72], [-1.05, 0.02, -0.62]
+  ].map((values) => new THREE.Vector3(...values));
+  const nodeGeometry = new THREE.SphereGeometry(0.075, 16, 12);
+  const nodeColors = [0x18a0b2, 0xe18a52, 0x397fa4];
+  nodePositions.forEach((position, index) => {
+    const material = new THREE.MeshBasicMaterial({ color: nodeColors[index % nodeColors.length], transparent: true, opacity: 0.95 });
+    const node = new THREE.Mesh(nodeGeometry, material);
+    node.position.copy(position);
+    node.userData.phase = index * 0.55;
+    fmriNodes.push(node);
+    fmriGroup.add(node);
+  });
+  const connectionPairs = [[0, 1], [0, 5], [1, 4], [1, 8], [2, 7], [2, 8], [3, 4], [3, 9], [4, 6], [4, 7], [5, 6], [6, 10], [7, 8], [9, 11], [10, 11]];
+  const connectionPoints = [];
+  connectionPairs.forEach(([start, end]) => connectionPoints.push(nodePositions[start], nodePositions[end]));
+  const connectionGeometry = new THREE.BufferGeometry().setFromPoints(connectionPoints);
+  const connectionMaterial = new THREE.LineBasicMaterial({ color: 0x23899b, transparent: true, opacity: 0.42 });
+  fmriGroup.add(new THREE.LineSegments(connectionGeometry, connectionMaterial));
+
+  const tractSpecs = [
+    [[-1.35, 0.5, 0.15], [0, 1.1, 0.85], [1.35, 0.4, 0.1]],
+    [[-1.25, -0.35, 0.55], [0, 0.45, 1.15], [1.25, -0.45, 0.5]],
+    [[-1.05, 0.95, -0.4], [-0.15, 0.05, 1.15], [1.18, -0.15, -0.5]],
+    [[-0.95, -0.75, -0.25], [0, 0.4, 0.95], [1.02, 0.85, -0.28]],
+    [[-0.45, 1.25, 0.05], [-0.65, 0.1, 1.05], [-0.28, -1.15, 0.15]],
+    [[0.45, 1.25, 0.05], [0.65, 0.1, 1.05], [0.28, -1.15, 0.15]],
+    [[-1.2, 0.05, -0.75], [0, -0.8, 0.85], [1.2, 0.15, -0.72]]
+  ];
+  tractSpecs.forEach((points, index) => {
+    const curve = new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point)));
+    const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(72));
+    const material = new THREE.LineDashedMaterial({
+      color: index % 2 ? 0x27889a : 0xdd7d47,
+      dashSize: 0.12,
+      gapSize: 0.08,
+      transparent: true,
+      opacity: 0.82
+    });
+    const line = new THREE.Line(geometry, material);
+    line.computeLineDistances();
+    tractMaterials.push(material);
+    dtiGroup.add(line);
+  });
+
+  const ventricleMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x4e91ad,
+    transparent: true,
+    opacity: 0.5,
+    transmission: 0.4,
+    roughness: 0.2,
+    depthWrite: false
+  });
+  [-0.29, 0.29].forEach((x) => {
+    const ventricle = new THREE.Mesh(new THREE.SphereGeometry(0.24, 24, 18), ventricleMaterial);
+    ventricle.position.set(x, 0.08, 0.25);
+    ventricle.scale.set(0.62, 1.25, 0.55);
+    atrophyGroup.add(ventricle);
+  });
+  const atrophyGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(1.62, 32, 24),
+    new THREE.MeshBasicMaterial({ color: 0xe18a52, transparent: true, opacity: 0.035, side: THREE.BackSide, depthWrite: false })
+  );
+  atrophyGlow.scale.set(1.32, 0.95, 0.92);
+  atrophyGroup.add(atrophyGlow);
+
+  brain.add(shellGroup, fmriGroup, dtiGroup, atrophyGroup);
+  brain.rotation.set(targetRotationX, 0.36, 0.02);
+  scene.add(brain);
+
+  function applyMode(mode) {
+    currentMode = mode;
+    fmriGroup.visible = mode === 'fmri';
+    dtiGroup.visible = mode === 'dti';
+    atrophyGroup.visible = mode === 'atrophy';
+  }
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    renderer.setSize(rect.width, rect.height, false);
+    camera.aspect = rect.width / rect.height;
+    camera.updateProjectionMatrix();
+  }
+
+  function render(time = 0) {
+    const seconds = time * 0.001;
+    if (!dragging && !reduceMotion) brain.rotation.y += 0.0024;
+    brain.rotation.x += (targetRotationX - brain.rotation.x) * 0.035;
+    brain.position.y = Math.sin(seconds * 0.75) * 0.045;
+
+    fmriNodes.forEach((node) => {
+      const pulse = 0.82 + Math.sin(seconds * 2.4 + node.userData.phase) * 0.24;
+      node.scale.setScalar(pulse);
+    });
+    tractMaterials.forEach((material, index) => {
+      material.dashOffset = -(seconds * (0.22 + index * 0.018));
+    });
+
+    const atrophyAmount = currentMode === 'atrophy' ? 0.9 + Math.sin(seconds * 0.7) * 0.012 : 1;
+    shellGroup.scale.x += (atrophyAmount - shellGroup.scale.x) * 0.025;
+    shellGroup.scale.y += (atrophyAmount - shellGroup.scale.y) * 0.025;
+    shellGroup.scale.z += (atrophyAmount - shellGroup.scale.z) * 0.025;
+    const ventricleScale = currentMode === 'atrophy' ? 1.1 + (Math.sin(seconds * 0.7) + 1) * 0.13 : 1;
+    atrophyGroup.children.slice(0, 2).forEach((ventricle) => {
+      ventricle.scale.set(0.62 * ventricleScale, 1.25 * ventricleScale, 0.55 * ventricleScale);
+    });
+
+    renderer.render(scene, camera);
+    if (active && !reduceMotion) frameId = requestAnimationFrame(render);
+  }
+
+  canvas.addEventListener('pointerdown', (event) => {
+    dragging = true;
+    lastPointerX = event.clientX;
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener('pointermove', (event) => {
+    if (dragging) {
+      brain.rotation.y += (event.clientX - lastPointerX) * 0.012;
+      lastPointerX = event.clientX;
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    targetRotationX = -0.08 + ((event.clientY - rect.top) / rect.height - 0.5) * 0.25;
+  });
+  const endDrag = (event) => {
+    dragging = false;
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+  };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('pointerleave', () => { targetRotationX = -0.08; });
+  panel.addEventListener('brainmodechange', (event) => applyMode(event.detail.mode));
+
+  stage.classList.add('three-ready');
+  applyMode(currentMode);
+  resize();
+
+  if ('ResizeObserver' in window) {
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+  } else {
+    window.addEventListener('resize', resize);
+  }
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      active = entry.isIntersecting;
+      cancelAnimationFrame(frameId);
+      if (active && !reduceMotion) frameId = requestAnimationFrame(render);
+    });
+    observer.observe(stage);
+  }
+
+  renderer.render(scene, camera);
+  if (!reduceMotion) frameId = requestAnimationFrame(render);
+}
+
 async function init() {
   $('#year').textContent = new Date().getFullYear();
   document.body.classList.add('motion-ready');
   setupProfileParallax();
   setupResearchField();
   setupBrainExplorer();
+  setupGlassBrain();
 
   const profile = await loadJSON('data/profile.json', defaultProfile);
   hydrateProfile({ ...defaultProfile, ...profile });
