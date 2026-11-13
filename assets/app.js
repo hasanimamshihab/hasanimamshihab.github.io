@@ -19,6 +19,7 @@ const defaultProfile = {
 };
 
 let allPublications = [];
+let revealObserver;
 
 async function loadJSON(path, fallback) {
   try {
@@ -95,6 +96,7 @@ function renderPublications(publications) {
   const list = $('#publication-list');
   if (!publications.length) {
     list.innerHTML = '<article class="publication-item"><div><h3>No publications are available yet.</h3><p>The Google Scholar synchronization has not returned any publication data.</p></div></article>';
+    registerRevealElements(list);
     return;
   }
 
@@ -110,6 +112,7 @@ function renderPublications(publications) {
         <span class="year-badge">${escapeHTML(pub.year || '—')}</span>
       </article>
     `).join('');
+  registerRevealElements(list);
 }
 
 function filterPublications() {
@@ -131,6 +134,162 @@ function escapeAttribute(value) {
   return escapeHTML(value).replace(/`/g, '&#96;');
 }
 
+function registerRevealElements(root = document) {
+  const selector = '.section-heading, .metric-card, .timeline-item, .focus-card, .publication-item, .project-card, .skills-section .chip-cloud, .contact-card';
+  $$(selector, root).forEach((node, index) => {
+    if (!node.classList.contains('reveal')) {
+      node.classList.add('reveal');
+      node.style.setProperty('--reveal-delay', `${Math.min(index % 4, 3) * 80}ms`);
+    }
+    if (revealObserver && !node.classList.contains('is-visible')) revealObserver.observe(node);
+  });
+}
+
+function setupRevealAnimations() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    registerRevealElements();
+    $$('.reveal').forEach((node) => node.classList.add('is-visible'));
+    return;
+  }
+
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' });
+
+  registerRevealElements();
+}
+
+function setupProfileParallax() {
+  const card = $('.profile-card');
+  if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  card.addEventListener('pointermove', (event) => {
+    const rect = card.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * -8;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+    card.style.setProperty('--portrait-x', `${x.toFixed(2)}px`);
+    card.style.setProperty('--portrait-y', `${y.toFixed(2)}px`);
+  });
+  card.addEventListener('pointerleave', () => {
+    card.style.setProperty('--portrait-x', '0px');
+    card.style.setProperty('--portrait-y', '0px');
+  });
+}
+
+function setupResearchField() {
+  const canvas = $('#research-field');
+  const hero = $('.hero');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = navigator.connection && navigator.connection.saveData;
+  if (!canvas || !hero || reduceMotion || saveData) return;
+
+  const context = canvas.getContext('2d');
+  const colors = ['118, 228, 247', '124, 242, 180', '168, 137, 255'];
+  let width = 0;
+  let height = 0;
+  let nodes = [];
+  let frameId = 0;
+  let active = true;
+  const pointer = { x: 0, y: 0, active: false };
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    width = rect.width;
+    height = rect.height;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.max(24, Math.min(54, Math.round(width / 25)));
+    nodes = Array.from({ length: count }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      radius: index % 9 === 0 ? 3.2 : 1.5 + Math.random() * 1.4,
+      color: colors[index % colors.length],
+      phase: Math.random() * Math.PI * 2
+    }));
+  }
+
+  function draw(time) {
+    context.clearRect(0, 0, width, height);
+    const maxDistance = Math.min(145, width * 0.16);
+
+    nodes.forEach((node, index) => {
+      node.x += node.vx;
+      node.y += node.vy;
+      if (node.x < -10 || node.x > width + 10) node.vx *= -1;
+      if (node.y < -10 || node.y > height + 10) node.vy *= -1;
+
+      if (pointer.active) {
+        const dx = pointer.x - node.x;
+        const dy = pointer.y - node.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance < 170 && distance > 0) {
+          node.x -= (dx / distance) * 0.08;
+          node.y -= (dy / distance) * 0.08;
+        }
+      }
+
+      for (let otherIndex = index + 1; otherIndex < nodes.length; otherIndex += 1) {
+        const other = nodes[otherIndex];
+        const distance = Math.hypot(node.x - other.x, node.y - other.y);
+        if (distance >= maxDistance) continue;
+        context.beginPath();
+        context.moveTo(node.x, node.y);
+        context.lineTo(other.x, other.y);
+        context.strokeStyle = `rgba(${node.color}, ${(1 - distance / maxDistance) * 0.16})`;
+        context.lineWidth = 0.8;
+        context.stroke();
+      }
+
+      const pulse = 0.82 + Math.sin(time * 0.0012 + node.phase) * 0.18;
+      context.beginPath();
+      context.arc(node.x, node.y, node.radius * pulse, 0, Math.PI * 2);
+      context.fillStyle = `rgba(${node.color}, ${index % 9 === 0 ? 0.9 : 0.58})`;
+      context.shadowColor = `rgba(${node.color}, 0.45)`;
+      context.shadowBlur = index % 9 === 0 ? 14 : 7;
+      context.fill();
+      context.shadowBlur = 0;
+    });
+
+    if (active) frameId = requestAnimationFrame(draw);
+  }
+
+  hero.addEventListener('pointermove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = event.clientX - rect.left;
+    pointer.y = event.clientY - rect.top;
+    pointer.active = true;
+  });
+  hero.addEventListener('pointerleave', () => { pointer.active = false; });
+
+  const visibilityObserver = new IntersectionObserver(([entry]) => {
+    const nextActive = entry.isIntersecting;
+    if (nextActive === active) return;
+    active = nextActive;
+    cancelAnimationFrame(frameId);
+    if (active) frameId = requestAnimationFrame(draw);
+  });
+  visibilityObserver.observe(hero);
+
+  if ('ResizeObserver' in window) {
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+  } else {
+    window.addEventListener('resize', resize);
+  }
+  resize();
+  frameId = requestAnimationFrame(draw);
+}
+
 async function init() {
   $('#year').textContent = new Date().getFullYear();
   const profile = await loadJSON('data/profile.json', defaultProfile);
@@ -138,6 +297,11 @@ async function init() {
   allPublications = await loadJSON('data/publications.json', []);
   renderPublications(allPublications);
   $('#publication-search').addEventListener('input', filterPublications);
+
+  document.body.classList.add('motion-ready');
+  setupRevealAnimations();
+  setupProfileParallax();
+  setupResearchField();
 
   const menuButton = $('.menu-button');
   const nav = $('.nav');
