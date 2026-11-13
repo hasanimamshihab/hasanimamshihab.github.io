@@ -40,13 +40,21 @@ Replace `assets/profile-placeholder.svg` with your professional photo if you wan
 
 ### Option A: Automatic Google Scholar refresh
 
-1. Open your public Google Scholar profile URL.
-2. Copy the value after `user=`. Example: if the URL is `https://scholar.google.com/citations?user=ABC123`, the ID is `ABC123`.
-3. In GitHub, go to **Settings → Secrets and variables → Actions → Variables**.
-4. Add a repository variable named `SCHOLAR_USER_ID`.
-5. Run **Actions → Update publications from Google Scholar → Run workflow**.
+The workflow is configured for Scholar user `U67qcK8AAAAJ` and runs weekly. It can
+also be launched from **Actions → Update publications from Google Scholar → Run workflow**.
 
-Important: Google Scholar does not provide a stable official public API. This workflow uses the third-party `scholarly` package, so occasional failure is possible. Keep the BibTeX option as a reliable fallback.
+To show only selected publications, add a repository Actions variable named
+`SCHOLAR_PUBLICATION_IDS`. Its value should be a comma-separated list of the IDs
+after the colon in Scholar citation URLs, for example `abc123,def456`. If the
+variable is empty, all publications are fetched. Every selected publication is
+fully loaded so its complete co-author list is included.
+
+Important: the Scholar profile must be public. A private profile is visible only
+inside its owner's signed-in Google session, so GitHub Actions and a public GitHub
+Pages site cannot read it. The updater exits safely without replacing the existing
+publication data when the profile is private or unavailable. Google Scholar does
+not provide an official public API; this workflow uses the third-party `scholarly`
+package, so occasional failure is possible.
 
 ### Option B: Manual BibTeX fallback
 

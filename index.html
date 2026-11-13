@@ -94,14 +94,14 @@
       <div class="section-heading">
         <p class="eyebrow">Publications</p>
         <h2>Selected publications</h2>
-        <p>Publications are loaded from <code>data/publications.json</code>. You can update this file manually, from BibTeX, or through the GitHub Action included in this package.</p>
+        <p>Selected publications and complete co-author lists are synchronized from Google Scholar.</p>
       </div>
       <div class="pub-toolbar">
         <input id="publication-search" type="search" placeholder="Search title, author, venue, or year" aria-label="Search publications" />
         <a class="button secondary compact" data-link="scholar" href="https://scholar.google.com/" target="_blank" rel="noopener">Open Google Scholar</a>
       </div>
       <div class="publication-list" id="publication-list"></div>
-      <p class="tiny-note">For reliability, this site displays publications from a local JSON file. The included workflow can refresh that JSON from Google Scholar when your Scholar profile ID is added.</p>
+      <p class="tiny-note">Publication data is refreshed automatically from Google Scholar and served from a cached site file for fast, reliable loading.</p>
     </section>
 
     <section class="section-pad" id="projects">

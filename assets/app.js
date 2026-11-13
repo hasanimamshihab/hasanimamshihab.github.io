@@ -94,7 +94,7 @@ function hydrateProfile(profile) {
 function renderPublications(publications) {
   const list = $('#publication-list');
   if (!publications.length) {
-    list.innerHTML = '<article class="publication-item"><div><h3>No publications found yet.</h3><p>Add publications to <code>data/publications.json</code> or run the Scholar update workflow.</p></div></article>';
+    list.innerHTML = '<article class="publication-item"><div><h3>No publications are available yet.</h3><p>The Google Scholar synchronization has not returned any publication data.</p></div></article>';
     return;
   }
 
